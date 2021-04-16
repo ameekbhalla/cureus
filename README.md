@@ -1,2 +1,2 @@
 # cureus
-A script for parsing article references
+Scripts for checking the formatting of articles submitted to the journal Cureus
