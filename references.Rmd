@@ -1,0 +1,65 @@
+---
+title: "Reference Checks"
+author: "Ameek Bhalla"
+date: "4/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(regexplain)
+```
+
+```{r}
+refs <- read_excel("C:/Users/ameek/OneDrive/Desktop/Book1.xlsx", 
+                   col_names = "entries") # assigned column name since the sheet did not have one
+
+#names
+refs$authors <- refs$entries %>% str_match("^\\d+\\.\\s(.*?):\\s") %>% as_tibble() %>% pluck(2) 
+
+refs$no_authors <- refs$entries %>% str_replace("^\\d+\\.\\s(.*?):\\s", "")
+
+#title: including any periods in the title because of misplace journal name
+refs$title <- refs$no_authors %>% str_match("(.*)\\.\\s(?!\\d)") %>% as_tibble() %>% pluck(2)
+
+refs$no_title <- refs$no_authors %>% str_replace("(.*)\\.\\s(?!\\d)", "")
+
+## if the page number is missing then a part of the DOI gets found as page number so find and remove DOIs first
+refs$doi <- refs$no_title %>% str_match("(10\\.\\d.*)") %>% as_tibble() %>% pluck(2) 
+
+refs$no_doi <- refs$no_title %>% str_replace("(10\\.\\d.*)", "")
+
+#journal (remove the match with brackets)
+refs$journal <- refs$no_doi %>% str_match("^([[:alpha:]\\s]+)\\. ") %>% as_tibble() %>% pluck(2)
+
+refs$no_journal <- refs$no_doi %>% str_replace("^([[:alpha:]\\s()]+)\\. ", "")
+
+#year
+refs$year <- refs$no_journal %>% str_match("(\\d{4})") %>% as_tibble() %>% pluck(2)
+
+refs$no_year <- refs$no_journal %>% str_replace("(\\d{4})", "")
+
+#volume
+refs$volume <- refs$no_year %>% str_match("(\\d+)\\:(?!.*\\:)") %>% as_tibble() %>% pluck(2)
+
+# refs %>% slice(19:25) %>% pluck("no_year") %>% str_view("^, (\\d)+")
+
+#pages
+refs$pages <- refs$no_year %>% str_match(":([\\d-]+)") %>% as_tibble() %>% pluck(2)
+
+refs2 <- refs %>% select(!starts_with("no_")) %>% relocate(doi, .after = last_col())
+
+#journal, year, volume, page together
+# test2 <- refs$no_doi %>% str_match("\\. ([\\w\\s\\()]+)\\. (\\d{4}), (\\d+)\\:(?!.*\\:)([\\d-]*)") 
+
+#double-barrel surnames
+refs$entries %>% str_view_all("[:lower:]-[:upper:]")
+
+#apply condition: opening bracket in journal name must be followed by a closing bracket
+#journal name in entry 29 is messed up due to field shifting
+```
