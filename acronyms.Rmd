@@ -1,0 +1,40 @@
+---
+title: "Acronym Checks"
+author: "Ameek Bhalla"
+date: "4/17/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libs}
+library(tidyverse)
+library(readr)
+```
+
+```{r data}
+full <- read_delim("57593_full.txt",
+"\t", escape_double = FALSE, col_names = FALSE)
+```
+
+```{r non_consecutive_tables}
+tables <- problems(full) %>% 
+  mutate(gap = row - lag(row)) 
+ 
+tables %>% select(row) %>% slice(n = 1)
+
+tables %>% arrange(desc(gap))
+```
+
+```{r consecutive_tables}
+full$X1 %>% str_which("Table\\s\\/\\d+") %>% arrange() %>% desc()
+  # mutate(match = str_detect(X1, "Table/d+/")) %>% 
+  filter(str_detect(X1, "Table\\s\\/\\d+"))
+  
+  c( tables[[1, 1]], tables %>% arrange(desc(gap)) %>% top_n(3) %>% arrange(gap) %>% pluck(1))
+  full$X1 %>% str_which("Table\\s\\/\\d+")
+```
