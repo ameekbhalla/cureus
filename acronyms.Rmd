@@ -32,9 +32,18 @@ tables %>% arrange(desc(gap))
 
 ```{r consecutive_tables}
 full$X1 %>% str_which("Table\\s\\/\\d+") %>% arrange() %>% desc()
-  # mutate(match = str_detect(X1, "Table/d+/")) %>% 
-  filter(str_detect(X1, "Table\\s\\/\\d+"))
-  
-  c( tables[[1, 1]], tables %>% arrange(desc(gap)) %>% top_n(3) %>% arrange(gap) %>% pluck(1))
-  full$X1 %>% str_which("Table\\s\\/\\d+")
+# mutate(match = str_detect(X1, "Table/d+/")) %>% 
+filter(str_detect(X1, "Table\\s\\/\\d+"))
+
+c( tables[[1, 1]], tables %>% arrange(desc(gap)) %>% top_n(3) %>% arrange(gap) %>% pluck(1))
+
+full$X1 %>% str_which("Table\\s\\/\\d+")
+#488 & 847 are from header of the table, they will not be present usually
+full$X1 %>% str_which("Table\\s\\/\\d+") %>% .[c(1,3, 5)]
+
+
+
+#material between tabs is spliced out, a copy of the text with the correct separator will have to be read in
+
+#capture between the first gap and next Table\\s\\/\\d+: pattern
 ```
