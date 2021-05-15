@@ -17,8 +17,26 @@ library(readr)
 ```
 
 ```{r data}
-full <- read_delim("57593_full.txt",
-"\t", escape_double = FALSE, col_names = FALSE)
+
+# 330 parsing failures; incorrect number of slashes for escaping tabs
+full1 <- read_delim("57593_full.txt", delim = "\t", escape_double = FALSE, col_names = FALSE)
+# no parsing failures; correct number of slashes required for specifying tab as the delimiter
+full1 <- read_delim("57593_full.txt", delim = "\\t", escape_double = FALSE, col_names = FALSE)
+
+# any white space as delimiter, including tabs and space
+full2 <- read_delim("57593_full.txt", delim = "\\s", escape_double = FALSE, col_names = FALSE)
+
+# period as delimiter
+full3 <- read_delim("57593_full.txt", delim = '\\.', escape_double = FALSE, col_names = FALSE)
+
+# using table function
+full4 <- read_table("57593_full.txt")
+
+# reads in as a character vector
+full5 <- read_file("57593_full.txt")
+
+#check
+(full6$`  *` == full2$`*`) %>% all()
 ```
 
 ```{r non_consecutive_tables}
