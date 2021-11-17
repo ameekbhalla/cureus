@@ -8,21 +8,3 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-```{r}
-df <- data.frame(
-  stringsAsFactors = FALSE,
-                items = c("Fever","Cough","SOB",
-                       "Sore throat","Runny nose","Muscle ache","Headache",
-                       "Fatigue","Diarrhea","Loss of taste/smell",
-                       "Availability of medication","Availability of vaccines",
-                       "Maximum incubation period (14 days)"),
-                yes = c(2428L,1642L,2280L,1191L,
-                       862L,1323L,1912L,1556L,1070L,2547L,2211L,1482L,1987L),
-                no = c(359L,1144L,507L,1596L,1925L,
-                       1464L,875L,1231L,1717L,240L,1576L,1305L,800L),
-                correct = c(87.1,59,81.8,42.7,30.9,
-                       47.5,68.6,55.8,38.4,91.4,43.5,46.8,71.3)
-)
-```
-
-)
